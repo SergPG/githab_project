@@ -17,6 +17,7 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'bootstrap', '~> 5.1.3'
 gem 'jquery-rails'
 gem 'sassc-rails'
+gem 'graphql'
 
 
 group :development, :test do
@@ -40,3 +41,4 @@ group :test do
   gem 'vcr'
   gem 'webmock'
 end
+gem "graphiql-rails", group: :development
