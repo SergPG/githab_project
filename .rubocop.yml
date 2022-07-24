@@ -13,6 +13,7 @@ AllCops:
   Exclude:
     - 'bin/*'
   NewCops: enable
+  SuggestExtensions: false
 Style/Documentation:
   Enabled: false
 Layout/LineLength:
