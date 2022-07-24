@@ -3,43 +3,56 @@
 class GithubService
   def initialize(user_login)
     @user_login = user_login
+    @errors = {}
   end
 
   def call
+    user_data
+    repos_data
+    return { errors: errors } if errors.present?
+
     {
-      name: request_user_name,
-      repos: request_user_repos
+      name: user_data['name'],
+      repos: repos_data.map {|repo| repo['name'] }
     }
   rescue Faraday::TimeoutError => e
-    error_message(e.message)
+    { errors: {message: e.message } }
   end
 
   private
 
-  attr_reader :user_login
+  attr_reader :user_login, :errors
 
-  def request_user_name
-    parse_body(github_client.personal_info)['name']
+
+  def user_data
+    @user_data ||= request_user_info
+  end
+
+  def repos_data
+    @repos_data ||= request_user_repos
+  end
+
+  def request_user_info
+    response = github_client.personal_info
+    body = parse_body(response)
+    return body if response.success?
+
+    errors.merge!(user_info: body['message'])
   end
 
   def request_user_repos
-    parse_body(github_client.repos).map do |repo|
-      repo['name']
-    end
+    response = github_client.repos
+    body = parse_body(response)
+    return body if response.success?
+
+    errors.merge!(repos: body['message'])
   end
 
   def parse_body(response)
-    data = JSON.parse(response.body)
-    return error_message(data['message']) unless response.success?
-
-    data
+    JSON.parse(response.body)
   end
 
   def github_client
     @github_client ||= GithubClient.new(user_login)
-  end
-
-  def error_message(message)
-    "Something went wrong: #{message}"
   end
 end
