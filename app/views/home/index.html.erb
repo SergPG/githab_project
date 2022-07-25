@@ -7,11 +7,17 @@
         <div class="card shadow">
           <div class="card-header">
             <!--  div #request_for_github -->
+            <%= form_with url: graphql_path do |form| %>
+
+
             <div class="input-group my-3" id="request_for_github">
-              <input type="text" class="form-control" id="input_login_name" placeholder="Enter Login name" aria-label="Enter Login name" aria-describedby="button_send">
+              <%= form.text_field :login, class: "form-control", id: "input_login", placeholder: "Enter Login name" %>
+
               <button class="btn btn-outline-dark" type="button" id="button_send">Send</button>
             </div>
             <!--  end div #request_for_github -->
+            <% end %>
+
           </div>
         </div>
 
@@ -40,3 +46,37 @@
 
   </div>
 </section>
+
+<script type="text/javascript">
+
+  $(document).ready(function() {
+    $('#button_send').click(function() {
+      event.preventDefault();
+
+      var entry = $('#input_login').val()
+
+      var query = `query github_info( $login: String!) {
+                        github(login: $login)
+                        {
+                          name
+                          repos
+                        }
+                      }`;
+
+      var variables = { login: entry };
+
+      var data_json = JSON.stringify({ query, variables });
+
+      // debugger;
+      $.ajax({
+          method: "POST",
+          url: "/graphql",
+          contentType: "application/json",
+          data: data_json,
+          success: function( data ){
+                      console.log(data);
+                  }
+        })
+    })
+});
+</script>
