@@ -83,7 +83,6 @@
           contentType: "application/json",
           data: data_json,
           success: function( data ){
-                    console.log(data);
                     $('#user_info_name').html(data.data.github.name);
                       console.log(data.data.github.name);
 
@@ -92,7 +91,6 @@
                           $('#list_user_repos').append(
                             '<li class="list-group-item">'+repo+'</li>'
                             );
-                          console.log(repo)
                         })
                       } else {
                         console.log(data.data.github.repos)
