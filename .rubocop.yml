@@ -12,6 +12,7 @@
 AllCops:
   Exclude:
     - 'bin/*'
+    - 'app/controllers/graphql_controller.rb'
   NewCops: enable
   SuggestExtensions: false
 Style/Documentation:
@@ -19,3 +20,6 @@ Style/Documentation:
 Layout/LineLength:
   Exclude:
     - 'config/**/*'
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'

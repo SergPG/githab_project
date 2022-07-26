@@ -7,11 +7,16 @@
         <div class="card shadow">
           <div class="card-header">
             <!--  div #request_for_github -->
+            <%= form_with url: graphql_path do |form| %>
+
             <div class="input-group my-3" id="request_for_github">
-              <input type="text" class="form-control" id="input_login_name" placeholder="Enter Login name" aria-label="Enter Login name" aria-describedby="button_send">
+              <%= form.text_field :login, class: "form-control", id: "input_login", placeholder: "Enter Login name" %>
+
               <button class="btn btn-outline-dark" type="button" id="button_send">Send</button>
             </div>
             <!--  end div #request_for_github -->
+            <% end %>
+
           </div>
         </div>
 
@@ -23,15 +28,21 @@
           <!--  card #github_result -->
           <div class="card shadow" id="github_result_info">
             <div class="card-header">
-                <h5 class="card-title" id="user_info_name" > Serhii Popov</h5>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-auto">
+                      <h6 class="card-title">User name: </h6>
+                    </div>
+                    <div class="col">
+                      <h6 class="card-title" id="user_info_name" > </h6>
+                    </div>
+                  </div>
+                </div>
             </div>
             <div class="card-body">
                 <h6 class="card-subtitle text-muted">Repositorios:</h6>
             </div>
             <ul class="list-group list-group-flush" id="list_user_repos">
-              <li class="list-group-item">An item</li>
-              <li class="list-group-item">A second item</li>
-              <li class="list-group-item">A third item</li>
             </ul>
           </div>
           <!-- end card #github_result -->
@@ -40,3 +51,55 @@
 
   </div>
 </section>
+
+<script type="text/javascript">
+
+  $(document).ready(function() {
+    $('#button_send').click(function() {
+      event.preventDefault();
+
+      var entry = $('#input_login').val()
+
+      var query = `query github_info( $login: String!) {
+                        github(login: $login)
+                        {
+                          name
+                          repos
+                        }
+                      }`;
+
+      var variables = { login: entry };
+
+      var data_json = JSON.stringify({ query, variables });
+
+      if ($(".list-group-item").length)
+      {
+         $(".list-group-item").remove();
+      }
+
+      $.ajax({
+          method: "POST",
+          url: "/graphql",
+          contentType: "application/json",
+          data: data_json,
+          success: function( data ){
+                    $('#user_info_name').html(data.data.github.name);
+                      console.log(data.data.github.name);
+
+                      if (data.data.github.repos != null) {
+                        data.data.github.repos.map(function(repo){
+                          $('#list_user_repos').append(
+                            '<li class="list-group-item">'+repo+'</li>'
+                            );
+                        })
+                      } else {
+                        console.log(data.data.github.repos)
+                      }
+                    },
+            error: function(errors) {
+                        console.log(errors);
+                    }
+        })
+    })
+});
+</script>
