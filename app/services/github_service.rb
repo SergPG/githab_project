@@ -9,20 +9,19 @@ class GithubService
   def call
     user_data
     repos_data
-    return { errors: errors } if errors.present?
+    return { errors: } if errors.present?
 
     {
       name: user_data['name'],
-      repos: repos_data.map {|repo| repo['name'] }
+      repos: repos_data.map { |repo| repo['name'] }
     }
   rescue Faraday::TimeoutError => e
-    { errors: {message: e.message } }
+    { errors: { message: e.message } }
   end
 
   private
 
   attr_reader :user_login, :errors
-
 
   def user_data
     @user_data ||= request_user_info

@@ -5,20 +5,19 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.1.2'
 gem 'bootsnap', require: false
+gem 'bootstrap', '~> 5.1.3'
 gem 'faraday'
+gem 'graphql'
 gem 'importmap-rails'
 gem 'jbuilder'
+gem 'jquery-rails'
 gem 'puma', '~> 5.0'
 gem 'rails', '~> 7.0.3', '>= 7.0.3.1'
+gem 'sassc-rails'
 gem 'sprockets-rails'
 gem 'stimulus-rails'
 gem 'turbo-rails'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-gem 'bootstrap', '~> 5.1.3'
-gem 'jquery-rails'
-gem 'sassc-rails'
-gem 'graphql'
-
 
 group :development, :test do
   gem 'debug', platforms: %i[mri mingw x64_mingw]
@@ -41,4 +40,4 @@ group :test do
   gem 'vcr'
   gem 'webmock'
 end
-gem "graphiql-rails", group: :development
+gem 'graphiql-rails', group: :development
